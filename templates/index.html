@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sender</title>
+    <link rel="stylesheet" href="{% static 'style.css'%}" type="text/css" media="screen">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <!-- <div class="container"> -->
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="row">
+                    <div class="col-md-6 header-left">
+                        <h6>Email Accounts:</h6>
+                    </div>
+                    <div class="col-md-6 header-right">
+                        <button class="btn btn-primary" onclick="refresh_email()"><i class="fas fa-sync-alt"></i></button>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#import_modal">Add</button>
+                    </div>
+
+                    <div class="container-inner">
+                        <table id="email_table">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="modal fade" id="import_modal" tabindex="-1" aria-labelledby="import_modal_label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="import_modal_label">Import Email</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'save_file_data'%}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="text" name="user" id="user" value="{{request.user.id}}" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="">Select File</label>
+                                            <input type="file" name="file" id="file" class="form-control">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Import</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <form action="">
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <div class="row">
+                                <div class="col-md-6 header-left">
+                                    <h6>Subject:</h6>
+                                </div>
+                                <div class="row">
+                                    <input type="text" name="company_name" id="company_name">
+                                </div>
+                                <h6>Message Body:</h6>
+                                <div class="container-inner" style="height:354px;">
+                                    <textarea name="message" id="message" cols="85" rows="13"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+
+                                <div class="row">
+                                    <div class="col-md-6 header-left">
+                                        <h6>Contacts:</h6>
+                                    </div>
+                                    <div class="col-md-6 header-right">
+                                        <button class="btn btn-info">Add</button>
+                                    </div>
+                                    <div class="container-inner">
+                                        <textarea name="recipient" id="recipient" cols="35" rows="15" readonly style="resize: auto;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <u>                
+                    <h6>Host</h6>
+                </u>
+                <input type="text" name="" id="" value="smtp.gmail.com">
+            </div>
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-2">
+                        <u><h6>Port</h6></u>
+                        <input type="text" name="port" id="port" value="587">
+                    </div>
+                    <div class="col-md-2">
+
+                        <u>
+                            <h6>Enable SSL</h6>
+                        </u>
+                        <input type="checkbox" name="ssl" id="ssl">
+                    </div>
+                    <div class="col-md-3">
+                        <u> <h6>Password</h6></u>
+                        <input type="password" name="password" id="password" value="12345">
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <br>
+
+                        <input type="submit" value="Save">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row text-center">
+                            <u><h6>Email Details</h6></u>
+                            <p><b>Limit:</b> 100</p>
+                            <p><b>Used:</b> 50 <b>Available:</b> 50</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-2">
+                <Button>Send Mail</Button>
+            </div>
+        </div>
+    </div>
+    <!-- </div> -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="{% static 'js.js' %}"></script>
+
+</body>
+
+</html>
